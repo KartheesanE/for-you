@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message for You ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #ffccd5;
+            --bg-gradient: linear-gradient(135deg, #fff0f3 0%, #ffccd5 100%);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-gradient);
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #musicToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(255, 77, 109, 0.2);
+            z-index: 10;
+            max-width: 450px;
+            width: 85%;
+            min-height: 500px;
+            border: 2px solid white;
+            backdrop-filter: blur(5px);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 { 
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary-pink); 
+            font-size: 2.8rem; 
+            margin: 0; 
+        }
+
+        .subtext { color: #880e4f; margin: 10px 0 20px 0; font-weight: bold; }
+
+        .button-area {
+            position: relative; /* Essential for absolute children */
+            height: 300px; 
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 15px 45px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            z-index: 10;
+        }
+
+        #yesBtn { 
+            background: var(--primary-pink); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4); 
+            transition: transform 0.3s ease;
+        }
+
+        #noBtn { 
+            background-color: var(--soft-pink); 
+            color: #ad1457; 
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            /* Start relative, JS will change this */
+            position: relative;
+        }
+
+        #quoteDisplay {
+            margin-top: 10px;
+            color: #ff4d6d;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            min-height: 1.5em;
+        }
+
+        .celebration { display: none; }
+        .celebration h1 { font-size: 3rem; animation: heartbeat 1.2s infinite; }
+        
+        #countdown {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: #d32f2f;
+            background: #fff;
+            padding: 8px 15px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid #ffccd5;
+        }
+
+        .gift-btn {
+    background: white;
+    border: 2px solid var(--primary-pink);
+    color: var(--primary-pink);
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.gift-btn:hover {
+    background: var(--primary-pink);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 77, 109, 0.3);
+}
+
+        #secretTrigger { cursor: pointer; margin-top: 15px; font-size: 1.5rem; display: block; }
+        #secretNote {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff0f3;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #ad1457;
+            border-left: 4px solid var(--primary-pink);
+        }
+
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .heart { position: absolute; pointer-events: none; z-index: 1; }
+    </style>
+</head>
+<body>
+
+    <button id="musicToggle">🎵</button>
+    <audio id="bgMusic" loop>
+        <source src="Vizhiyil-Un-Vizhiyil.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="askInterface">
+            <h1>Hey Gorgeous...</h1>
+            <p class="subtext">I have a very important question to ask you. 😉</p>
+            <div class="button-area" id="box">
+                <button id="yesBtn">YES!</button>
+                <button id="noBtn">No</button>
+            </div>
+            <div id="quoteDisplay"></div>
+        </div>
+
+        <div class="celebration" id="successMsg">
+            <h1>I knew you'd say Yes! 🥰🌹</h1>
+            <p style="color: #ad1457;">You've made me the luckiest person alive.</p>
+            <div id="countdown"></div>
+            <span id="secretTrigger">💌</span>
+            <!-- <div id="secretNote">
+                "I wanted to tell you that you're not just my Valentine, you're my best friend and my greatest adventure. I love you! ❤️"
+            </div> -->
+            <div id="secretNote">
+    <p>"I wanted to tell you that you're not just my Valentine, you're my best friend and my greatest adventure. I love you! ❤️"</p>
+    <hr style="border: 0; border-top: 1px solid var(--soft-pink); margin: 15px 0;">
+    <p style="font-weight: bold; font-size: 1rem;">Pick your Valentine's gift: 🎁</p>
+    
+    <div id="giftOptions" style="display: flex; flex-direction: column; gap: 10px;">
+        <button class="gift-btn" onclick="sendWhatsApp('A giant bouquet of roses 🌹')">A giant bouquet 🌹</button>
+        <button class="gift-btn" onclick="sendWhatsApp('A cozy dinner date 🍝')">A cozy dinner date🍝</button>
+        <button class="gift-btn" onclick="sendWhatsApp('A surprise adventure ✈️')">A surprise adventure ✈️</button>
+        <button class="gift-btn" onclick="sendWhatsApp('Just your time and hugs 🤗')">Just your time and hugs 🤗</button>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const buttonArea = document.getElementById('box');
+        const askInterface = document.getElementById('askInterface');
+        const successMsg = document.getElementById('successMsg');
+        const quoteDisplay = document.getElementById('quoteDisplay');
+        const music = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+
+        const quotes = [
+            "Are you sure?", "Think again!", "Pleeaaase?", "I'll be sad...",
+            "Nice try! 😉", "Think of the flowers! 🌹", "I'll cook for you! 🍝",
+            "Think of all the chocolates! 🍫", "You look too good to say no.",
+            "I already planned everything! ✨", "You're the 'Yes' to my 'Always'. ✨"
+        ];
+
+        let quoteIndex = 0;
+        let yesScale = 1;
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', moveButton); // For mobile users who tap
+
+        function moveButton() {
+            // Get dimensions of the container (buttonArea)
+            const areaWidth = buttonArea.clientWidth;
+            const areaHeight = buttonArea.clientHeight;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // Ensure the button becomes absolute to move freely within the area
+            noBtn.style.position = 'absolute';
+
+            // Calculate random positions within the buttonArea bounds
+            const maxX = areaWidth - btnWidth;
+            const maxY = areaHeight - btnHeight;
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            
+            showNewQuote();
+        }
+
+        function showNewQuote() {
+            quoteDisplay.style.opacity = 0;
+            setTimeout(() => {
+                quoteDisplay.innerHTML = quotes[quoteIndex];
+                quoteDisplay.style.opacity = 1;
+                quoteIndex = (quoteIndex + 1) % quotes.length;
+            }, 150);
+            
+            // Grow the Yes button
+            yesScale += 0.15;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        }
+
+        yesBtn.addEventListener('click', () => {
+            askInterface.style.display = 'none';
+            successMsg.style.display = 'block';
+            startCountdown();
+            createHearts();
+        });
+
+        document.getElementById('secretTrigger').addEventListener('click', function() {
+            document.getElementById('secretNote').style.display = 'block';
+            this.style.display = 'none';
+        });
+
+        function startCountdown() {
+            // Updated to use the target year 2026 as per system context
+            const valentineDate = new Date("Feb 14, 2026 00:00:00").getTime();
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = valentineDate - now;
+                
+                if (distance < 0) {
+                    document.getElementById("countdown").innerHTML = "Happy Valentine's Day! 🌹";
+                    clearInterval(timer);
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("countdown").innerHTML = `Wait time: ${d}d ${h}h ${m}m ${s}s 🌹`;
+            }, 1000);
+        }
+
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100vh';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heart.style.transition = `all ${Math.random() * 2 + 3}s linear`;
+                document.body.appendChild(heart);
+                
+                // Trigger animation
+                setTimeout(() => { 
+                    heart.style.top = '-10vh'; 
+                    heart.style.opacity = '0'; 
+                }, 100);
+                
+                // Cleanup
+                setTimeout(() => heart.remove(), 5000);
+            }, 300);
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (music.paused) { 
+                music.play(); 
+                musicToggle.innerHTML = "🔊"; 
+            } else { 
+                music.pause(); 
+                musicToggle.innerHTML = "🎵"; 
+            }
+        });
+
+        function sendWhatsApp(gift) {
+    const phoneNumber = "8220062151"; // 👈 CHANGE THIS
+    const message = `I just wanted to say YES! 🥰 And for my gift, I'd love: ${gift}`;
+    
+    // This encodes the text for a URL and opens WhatsApp
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    
+    window.open(url, '_blank');
+}
+    </script>
+</body>
+</html>
